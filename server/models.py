@@ -44,12 +44,7 @@ class Appearance(db.Model, SerializerMixin):
 
     @validates('rating')
     def validate_rating(self, _, rating):
-        """
-        Validate the rating of an Appearance.
-
-        Raises:
-            ValueError: If the rating is not between 1 and 5.
-        """
+        # Ensure the rating is between 1 and 5
         if rating < 1 or rating > 5:
             raise ValueError(
                 'Invalid rating. Rating should be between 1 and 5.')
