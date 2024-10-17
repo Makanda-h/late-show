@@ -69,9 +69,7 @@ class Appearances(Resource):
             if not guest:
                 raise ValueError('Invalid guest_id')
 
-            new_appearance = Appearance(guest_id=guest_id,
-                                        episode_id=episode_id,
-                                        rating=rating)
+            new_appearance = Appearance(guest_id=guest_id, episode_id=episode_id, rating=rating)
             db.session.add(new_appearance)
             db.session.commit()
 
@@ -89,7 +87,7 @@ class Appearances(Resource):
                 errors.append(
                     f'Appearance already exists. Create new appearance')
         except:
-            return {'errors': ['An uknown error occurred']}, 500
+            return {'errors': ['Uknown Error!!']}, 500
         return {'errors': errors}, 400
 
 

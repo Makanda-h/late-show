@@ -8,76 +8,68 @@ from models import Appearance, Episode, Guest, db
 
 
 def seed_data():
-    """
-    This function seeds the database with random data. Specifically, it resets the
-    database, creates 50 guests, 100 episodes, and 150 appearances. The appearances
-    are randomly assigned to guests and episodes. The episodes have a sequential
-    number and a date that increments by 1 month starting from Oct 1, 1989.
-
-    The function uses the Faker library to generate fake data. The appearances are
-    stored in a set to ensure that the (episode_id, guest_id) pair is unique. The
-    seed data is then committed to the database.
-
-    :return: None
-    """
+  
+    # Seed the database with fake data
     # Initialize faker
     fake = Faker()
-    print('Reseting database...')
+    print('Setting up database')
+    
     Appearance.query.delete()
     Guest.query.delete()
     Episode.query.delete()
-    number_of_guests = 50
-    number_of_episodes = 100
-    number_of_appearances = 150
-
-    print(f'Creating {number_of_guests} guests...')
+    
+    no_of_guests = 50
+    no_of_ep = 100
+    no_of_app = 150
+    
+    # seed guests data
+    print(f'{no_of_guests} Guests seeding')
     for _ in range(50):
         name = fake.unique.name()
         occupation = fake.job()
         guest = Guest(name=name, occupation=occupation)
         db.session.add(guest)
         db.session.commit()
-    print(f'Successfully seeded {number_of_guests} guests.')
+    print(f'Guests seeded successfully!')
 
-    print(f'Creating {number_of_episodes} episodes...')
+    # Seed episodes data
+    print(f'{no_of_ep} Episodes seeding ')
     # Start date for the episodes
     start_date = datetime(1989, 10, 1)
-    for i in range(number_of_episodes):
-        # Increment the date by 1 month for each episode
+    for i in range(no_of_ep):
+        # Generate the date string
         date = start_date + relativedelta(months=i)
         date_string = date.strftime('%m/%d/%y')
 
-        # Create a new episode with the incremented date and sequential number
+        # Create the episode and add to session
         episode = Episode(date=date_string, number=i + 1)
         db.session.add(episode)
         db.session.commit()
-    print(f'Successfully seeded {number_of_episodes} episodes.')
+    print(f'Episodes seeded successfully.')
 
-    print(f'Creating {number_of_appearances} appearances...')
+    # Seed appearances data
+    
+    print(f'{no_of_app} appearances seeding')
     episodes = Episode.query.all()
     guests = Guest.query.all()
-    appearance_set = set()
+    
+    app_set = set() # Set to store the unique (episode_id, guest_id) pairs
 
-    while len(
-            appearance_set
-    ) < number_of_appearances:  # Target is to create a 100 unique appearance records
+    while len(app_set) < no_of_app:  # Loop until the set has the required number of appearances
         episode = random.choice(episodes)
         guest = random.choice(guests)
         rating = random.choice(range(1, 5 + 1))
 
-        # Ensure the (episode_id, guest_id) pair is unique
-        if (episode.id, guest.id) not in appearance_set:
-            # Add the unique pair to the set
-            appearance_set.add((episode.id, guest.id))
-
-            # Create the Appearance entry and add to session
-            appearance = Appearance(episode_id=episode.id,
-                                    guest_id=guest.id,
-                                    rating=rating)
+        # Check if the pair is already in the set
+        if (episode.id, guest.id) not in app_set:
+            # Add the pair to the set
+            app_set.add((episode.id, guest.id))
+            # Create the appearance and add to session
+            appearance = Appearance(episode_id=episode.id, guest_id=guest.id, rating=rating)
             db.session.add(appearance)
-    # Commit the session to insert all the uppearance records
+    # Commit the session
     db.session.commit()
-    print(f'Successfully seeded {number_of_appearances} appearances.')
+    print(f'{no_of_app} appearances Successfully seeded!')
 
 
 if __name__ == '__main__':

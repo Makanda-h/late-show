@@ -14,9 +14,8 @@ class Episode(db.Model, SerializerMixin):
     date = db.Column(db.String)
     number = db.Column(db.Integer)
 
-    appearances = db.relationship('Appearance',
-                                  backref='episode',
-                                  cascade='all, delete-orphan')
+    appearances = db.relationship('Appearance', backref='episode',cascade='all, delete-orphan')
+    
     guests = association_proxy('appearances', 'guest')
 
     def __repr__(self):
@@ -28,17 +27,10 @@ class Appearance(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer)
-    episode_id = db.Column(db.Integer,
-                           db.ForeignKey('episodes.id'),
-                           nullable=False)
-    guest_id = db.Column(db.Integer,
-                         db.ForeignKey('guests.id'),
-                         db.ForeignKey('guests.id'),
-                         nullable=False)
+    episode_id = db.Column(db.Integer, db.ForeignKey('episodes.id'), nullable=False)
+    guest_id = db.Column(db.Integer, db.ForeignKey('guests.id'), db.ForeignKey('guests.id'), nullable=False)
 
-    __table_args__ = UniqueConstraint('episode_id',
-                                      'guest_id',
-                                      name='uq_episode_id_guest_id'),
+    __table_args__ = UniqueConstraint('episode_id', 'guest_id',  name='uq_episode_id_guest_id'),
 
     serialize_rules = '-episode.appearances', '-guest.appearances'
 
@@ -61,9 +53,7 @@ class Guest(db.Model, SerializerMixin):
     name = db.Column(db.String)
     occupation = db.Column(db.String)
 
-    appearances = db.relationship('Appearance',
-                                  backref='guest',
-                                  cascade='all, delete-orphan')
+    appearances = db.relationship('Appearance', backref='guest', cascade='all, delete-orphan')
     episodes = association_proxy('appearances', 'episode')
 
     def __repr__(self):

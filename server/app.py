@@ -1,6 +1,6 @@
 from flask import Flask
-from flask_migrate import Migrate
 from flask_restful import Api
+from flask_migrate import Migrate
 from models import db
 from resources import Appearances, EpisodeByID, Episodes, Guests
 
@@ -18,4 +18,4 @@ api.add_resource(Guests, '/guests')
 api.add_resource(Appearances, '/appearances')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5555)
+    app.run(debug=True)
